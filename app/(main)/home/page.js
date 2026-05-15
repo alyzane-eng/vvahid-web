@@ -5,12 +5,12 @@ import { useState } from 'react'
 import Link from 'next/link'
 
 const sampleCars = [
-  { id: 1, title: 'Toyota HILUX Revo', category: 'SUV', daily_rate: 10500, rating: 4.9, reviews: 100 },
-  { id: 2, title: 'TOYOTA Corolla Altis', category: 'Sedan', daily_rate: 7500, rating: 4.8, reviews: 100 },
-  { id: 3, title: 'TOYOTA Corolla Gli', category: 'Sedan', daily_rate: 6000, rating: 4.9, reviews: 100 },
-  { id: 4, title: 'TOYOTA Yaris', category: 'Sedan', daily_rate: 6000, rating: 5.0, reviews: 100 },
-  { id: 5, title: 'Toyota Land Cruiser 300', category: 'Premium', daily_rate: 30000, rating: 4.8, reviews: 120 },
-  { id: 6, title: 'Honda Civic', category: 'Sedan', daily_rate: 6500, rating: 4.9, reviews: 100 },
+  { id: 1, title: 'Toyota HILUX Revo', category: 'SUV', daily_rate: 10500, rating: 4.9, reviews: 100, image: 'https://images.unsplash.com/photo-1559416523-140ddc3d238c?w=500&q=80' },
+  { id: 2, title: 'TOYOTA Corolla Altis', category: 'Sedan', daily_rate: 7500, rating: 4.8, reviews: 100, image: 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=500&q=80' },
+  { id: 3, title: 'TOYOTA Corolla Gli', category: 'Sedan', daily_rate: 6000, rating: 4.9, reviews: 100, image: 'https://images.unsplash.com/photo-1590362891991-f776e747a588?w=500&q=80' },
+  { id: 4, title: 'TOYOTA Yaris', category: 'Sedan', daily_rate: 6000, rating: 5.0, reviews: 100, image: 'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=500&q=80' },
+  { id: 5, title: 'Toyota Land Cruiser 300', category: 'Premium', daily_rate: 30000, rating: 4.8, reviews: 120, image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=500&q=80' },
+  { id: 6, title: 'Honda Civic', category: 'Sedan', daily_rate: 6500, rating: 4.9, reviews: 100, image: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=500&q=80' },
 ]
 
 const categories = [
@@ -20,6 +20,79 @@ const categories = [
   { name: 'Premium', count: 100 },
 ]
 
+const FALLBACK = 'https://images.unsplash.com/photo-1493238792000-8113da705763?w=500&q=80'
+
+function CarCard({ car }) {
+  return (
+    <Link href={`/cars/${car.id}`} style={{ textDecoration: 'none' }}>
+      <div style={{
+        backgroundColor: 'white',
+        borderRadius: '14px',
+        border: '1px solid #EBEBEB',
+        overflow: 'hidden',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+        transition: 'transform 0.15s',
+      }}>
+        {/* Image container — fixed aspect ratio */}
+        <div style={{
+          width: '100%',
+          aspectRatio: '16/10',
+          overflow: 'hidden',
+          backgroundColor: '#F0F0F0',
+        }}>
+          <img
+            src={car.image}
+            alt={car.title}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              objectPosition: 'center',
+              display: 'block',
+            }}
+            onError={e => { e.target.src = FALLBACK }}
+          />
+        </div>
+
+        {/* Card info */}
+        <div style={{ padding: '10px 12px 12px 12px' }}>
+          {/* Star rating */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '3px', marginBottom: '5px' }}>
+            <span style={{ color: '#F59E0B', fontSize: '12px' }}>★</span>
+            <span style={{ color: '#888', fontSize: '11px' }}>
+              {car.rating} ({car.reviews}+ Review)
+            </span>
+          </div>
+          {/* Car name */}
+          <p style={{
+            color: '#1A1A1A',
+            fontSize: '13px',
+            fontWeight: '600',
+            margin: '0 0 5px 0',
+            lineHeight: '1.3',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}>
+            {car.title}
+          </p>
+          {/* Price */}
+          <p style={{
+            color: '#0D2318',
+            fontSize: '13px',
+            fontWeight: '700',
+            margin: 0,
+          }}>
+            Rs {car.daily_rate.toLocaleString()}
+            <span style={{ fontWeight: '400', color: '#888', fontSize: '11px' }}>
+              {' '}/ 1 day
+            </span>
+          </p>
+        </div>
+      </div>
+    </Link>
+  )
+}
 export default function HomePage() {
   const [activeCategory, setActiveCategory] = useState('All Cars')
 
@@ -36,9 +109,7 @@ export default function HomePage() {
         {/* Top Row */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
           <div>
-            <h1 style={{ color: 'white', fontSize: '24px', fontWeight: '800', margin: 0 }}>
-              Hi, Touseef! 👋
-            </h1>
+            <h1 style={{ color: 'white', fontSize: '24px', fontWeight: '800', margin: 0 }}>Hi, Touseef! 👋</h1>
             <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '4px' }}>
               <MapPin size={13} color="rgba(255,255,255,0.7)" />
               <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '13px' }}>Karachi, Pakistan</span>
@@ -57,11 +128,7 @@ export default function HomePage() {
         {/* Search Bar */}
         <div style={{ backgroundColor: 'white', borderRadius: '12px', padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
           <Search size={18} color="#888" />
-          <input
-            type="text"
-            placeholder="Search car..."
-            style={{ flex: 1, border: 'none', outline: 'none', fontSize: '14px', fontFamily: 'Inter, sans-serif' }}
-          />
+          <input type="text" placeholder="Search car..." style={{ flex: 1, border: 'none', outline: 'none', fontSize: '14px', fontFamily: 'Inter, sans-serif' }} />
         </div>
 
         {/* Category Chips */}
@@ -70,18 +137,7 @@ export default function HomePage() {
             <button
               key={cat.name}
               onClick={() => setActiveCategory(cat.name)}
-              style={{
-                flexShrink: 0,
-                padding: '8px 16px',
-                borderRadius: '12px',
-                border: 'none',
-                cursor: 'pointer',
-                backgroundColor: activeCategory === cat.name ? 'white' : 'rgba(255,255,255,0.2)',
-                color: activeCategory === cat.name ? '#0D2318' : 'white',
-                fontWeight: activeCategory === cat.name ? '700' : '500',
-                fontSize: '13px',
-                fontFamily: 'Inter, sans-serif',
-              }}
+              style={{ flexShrink: 0, padding: '8px 16px', borderRadius: '12px', border: 'none', cursor: 'pointer', backgroundColor: activeCategory === cat.name ? 'white' : 'rgba(255,255,255,0.2)', color: activeCategory === cat.name ? '#0D2318' : 'white', fontWeight: activeCategory === cat.name ? '700' : '500', fontSize: '13px', fontFamily: 'Inter, sans-serif' }}
             >
               <div>{cat.name}</div>
               <div style={{ fontSize: '11px', opacity: 0.7 }}>{cat.count} cars</div>
@@ -90,7 +146,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* White Content */}
+      {/* Content */}
       <div style={{ padding: '20px' }}>
 
         {/* Find Closest Car Banner */}
@@ -98,9 +154,7 @@ export default function HomePage() {
           <div style={{ width: '44px', height: '44px', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
             <MapPin size={22} color="white" />
           </div>
-          <p style={{ color: 'white', fontSize: '14px', fontWeight: '600', flex: 1, margin: 0 }}>
-            Find the closest car to your location
-          </p>
+          <p style={{ color: 'white', fontSize: '14px', fontWeight: '600', flex: 1, margin: 0 }}>Find the closest car to your location</p>
           <div style={{ width: '30px', height: '30px', backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <ChevronRight size={16} color="white" />
           </div>
@@ -111,26 +165,8 @@ export default function HomePage() {
           <h2 style={{ fontSize: '18px', fontWeight: '700', margin: 0 }}>Available cars</h2>
           <button style={{ color: '#0D2318', fontSize: '13px', fontWeight: '500', background: 'none', border: 'none', cursor: 'pointer' }}>See more</button>
         </div>
-
-        {/* Car Grid */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '24px' }}>
-          {filteredCars.map(car => (
-            <Link key={car.id} href={`/cars/${car.id}`} style={{ textDecoration: 'none' }}>
-              <div style={{ backgroundColor: 'white', borderRadius: '14px', border: '1px solid #E5E5E5', overflow: 'hidden' }}>
-                <div style={{ backgroundColor: '#F0F0F0', height: '110px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '36px' }}>
-                  🚗
-                </div>
-                <div style={{ padding: '10px 12px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '4px' }}>
-                    <span style={{ color: '#FBBF24', fontSize: '12px' }}>★</span>
-                    <span style={{ color: '#888', fontSize: '11px' }}>{car.rating} ({car.reviews}+ Review)</span>
-                  </div>
-                  <p style={{ color: '#1A1A1A', fontSize: '13px', fontWeight: '600', margin: '0 0 4px 0', lineHeight: '1.3' }}>{car.title}</p>
-                  <p style={{ color: '#0D2318', fontSize: '13px', fontWeight: '700', margin: 0 }}>Rs {car.daily_rate.toLocaleString()} / 1 day</p>
-                </div>
-              </div>
-            </Link>
-          ))}
+          {filteredCars.map(car => <CarCard key={car.id} car={car} />)}
         </div>
 
         {/* Recent Cars */}
@@ -139,23 +175,7 @@ export default function HomePage() {
           <button style={{ color: '#0D2318', fontSize: '13px', fontWeight: '500', background: 'none', border: 'none', cursor: 'pointer' }}>See more</button>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-          {sampleCars.slice(0, 4).map(car => (
-            <Link key={`recent-${car.id}`} href={`/cars/${car.id}`} style={{ textDecoration: 'none' }}>
-              <div style={{ backgroundColor: 'white', borderRadius: '14px', border: '1px solid #E5E5E5', overflow: 'hidden' }}>
-                <div style={{ backgroundColor: '#F0F0F0', height: '110px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '36px' }}>
-                  🚗
-                </div>
-                <div style={{ padding: '10px 12px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '4px' }}>
-                    <span style={{ color: '#FBBF24', fontSize: '12px' }}>★</span>
-                    <span style={{ color: '#888', fontSize: '11px' }}>{car.rating} ({car.reviews}+ Review)</span>
-                  </div>
-                  <p style={{ color: '#1A1A1A', fontSize: '13px', fontWeight: '600', margin: '0 0 4px 0', lineHeight: '1.3' }}>{car.title}</p>
-                  <p style={{ color: '#0D2318', fontSize: '13px', fontWeight: '700', margin: 0 }}>Rs {car.daily_rate.toLocaleString()} / 1 day</p>
-                </div>
-              </div>
-            </Link>
-          ))}
+          {sampleCars.slice(0, 4).map(car => <CarCard key={`r-${car.id}`} car={car} />)}
         </div>
 
       </div>
@@ -163,7 +183,7 @@ export default function HomePage() {
       {/* Bottom padding */}
       <div style={{ height: '80px' }}></div>
 
-      {/* Bottom Navigation */}
+      {/* Bottom Nav */}
       <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, backgroundColor: '#0D2318', padding: '12px 20px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
           <Link href="/home" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', textDecoration: 'none' }}>
